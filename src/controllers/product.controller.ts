@@ -12,13 +12,12 @@ import { ProductService } from '../services/product.service';
 
 @Controller('product')
 export class ProductController {
-  userService: any;
   constructor(private readonly ProductService: ProductService) { }
 
   @Get('/find/:id')
-  async getProduct(@Param() params): Promise<ProductDto> {
+  async getProduct(@Param('id') id: string): Promise<ProductDto> {
     try {
-      const response = await this.ProductService.findProduct(params.id);
+      const response = await this.ProductService.findProduct(id);
 
       return response;
     } catch (error) {
@@ -26,7 +25,7 @@ export class ProductController {
     }
   }
 
-  @Get('/listAll')
+  @Get('')
   async getAll(): Promise<ProductDto[]> {
     try {
       const response = await this.ProductService.getAll();
@@ -37,8 +36,8 @@ export class ProductController {
     }
   }
 
-  @Post('/createProduct')
-  async createProduct(@Body() Product): Promise<ProductDto> {
+  @Post('')
+  async createProduct(@Body() Product: ProductDto): Promise<ProductDto> {
     try {
       const response = await this.ProductService.create(Product);
 
@@ -48,10 +47,10 @@ export class ProductController {
     }
   }
 
-  @Put("/update-Product/:id")
-  async updateProduct(@Param() params, @Body() Product): Promise<ProductDto> {
+  @Put("/:id")
+  async updateProduct(@Param('id') id: string, @Body() Product: ProductDto): Promise<ProductDto> {
     try {
-      const response = await this.ProductService.updateProduct(params.id, Product);
+      const response = await this.ProductService.updateProduct(id, Product);
 
       return response;
     } catch (error) {
@@ -59,10 +58,10 @@ export class ProductController {
     }
   }
 
-  @Delete('remove/:id')
-  async deleteProduct(@Param() params): Promise<ProductDto> {
+  @Delete('/:id')
+  async deleteProduct(@Param("id") id: string): Promise<ProductDto> {
     try {
-      const response = await this.ProductService.deleteProduct(params.id);
+      const response = await this.ProductService.deleteProduct(id);
 
       return response;
     } catch (error) {

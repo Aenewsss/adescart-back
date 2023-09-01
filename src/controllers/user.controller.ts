@@ -4,7 +4,7 @@ import { UserService } from '../services/user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Get('/find/:id')
   async getUser(@Param() params): Promise<UserDto> {
@@ -28,47 +28,21 @@ export class UserController {
     }
   }
 
-  @Get('/listAll')
-  async getAll(): Promise<UserDto[]> {
+  @Post('/change-password')
+  async changePassword(@Body() dto: { email: string, newPassword: string, repeatPassword: string }) {
     try {
-      const response = await this.userService.getAll();
+      const user = await this.userService.findUserByEmail(dto.email)
 
-      return response;
-    } catch (error) {
-      return error.message;
+      if (!user) throw Error("User not found")
+
+      if(dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")      
+      
+      const result = this.userService.changePassword(user.id, dto.newPassword)      
+
+      return result
+    } catch (e) {
+      return e.message
     }
   }
 
-  @Post('/create-user')
-  async createUser(@Body() user): Promise<UserDto> {
-    try {
-      const response = await this.userService.create(user);
-
-      return response;
-    } catch (error) {
-      return error.message;
-    }
-  }
-
-  @Put("/update-user/:id")
-  async updateUser(@Param() params, @Body() user): Promise<UserDto> {
-    try {
-      const response = await this.userService.updateUser(params.id, user);
-
-      return response;
-    } catch (error) {
-      return error.message;
-    }
-  }
-
-  @Delete('remove/:id')
-  async deleteUser(@Param() params): Promise<UserDto> {
-    try {
-      const response = await this.userService.deleteUser(params.id);
-
-      return response;
-    } catch (error) {
-      return error.message;
-    }
-  }
 }
