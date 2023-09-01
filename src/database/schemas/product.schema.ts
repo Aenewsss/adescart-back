@@ -11,7 +11,7 @@ export class Product {
   @Prop({ required: true, type: String })
   price: string;
 
-  @Prop({ required: true, type: CategoryEnum })
+  @Prop({ required: true, type: String })
   category: CategoryEnum;
 
   @Prop({ required: true, type: String })
