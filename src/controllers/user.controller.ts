@@ -3,15 +3,17 @@ import { UserDto } from '../dtos/user.dto';
 import { UserService } from '../services/user.service';
 import { IsString } from "class-validator";
 import { ChangePasswordValidator } from "src/validators/change-password.validator";
+import { AuthValidator } from "src/validators/auth.validator";
+import * as bcrypt from "bcrypt"
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get('/find/:id')
-  async getUser(@Param() params): Promise<UserDto> {
+  async getUser(@Param('id') id: string): Promise<UserDto> {
     try {
-      const response = await this.userService.findUserById(params.id);
+      const response = await this.userService.findUserById(id);
 
       return response;
     } catch (error) {
@@ -20,11 +22,15 @@ export class UserController {
   }
 
   @Post('/auth')
-  async authenticate(@Body() user): Promise<UserDto> {
+  async authenticate(@Body() dto: AuthValidator): Promise<UserDto> {
     try {
-      const response = await this.userService.findUser(user);
+      const user = await this.userService.findUserByEmail(dto.email)
 
-      return response;
+      if (!user) throw Error("User not found")
+
+      if (!await bcrypt.compare(dto.password, user.password)) throw Error("Email or password incorrect")
+
+      return user;
     } catch (error) {
       return error.message;
     }
@@ -40,12 +46,28 @@ export class UserController {
 
       if (dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")
 
-      const result = this.userService.changePassword(user.id, dto.newPassword)
+      const hashPass = await this.hashPassword(dto.newPassword)
+
+      const result = this.userService.changePassword(user.id, hashPass)
 
       return result
     } catch (e) {
       return e.message
     }
+  }
+
+  @Post()
+  async createUser(@Body() dto: { name, email, password }) {
+    const hashPass = await this.hashPassword(dto.password)
+
+    return await this.userService.create({
+      ...dto,
+      password: hashPass
+    })
+  }
+
+  private async hashPassword(password: string) {
+    return await bcrypt.hash(password, await bcrypt.genSalt(10))
   }
 
 }
