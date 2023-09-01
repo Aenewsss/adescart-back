@@ -7,8 +7,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ProductDto } from '../dtos/product.dto';
+import { ProductDto } from '../database/dtos/product.dto';
 import { ProductService } from '../services/product.service';
+import { ProductValidator } from "src/validators/product.validator";
 
 @Controller('product')
 export class ProductController {
@@ -37,7 +38,7 @@ export class ProductController {
   }
 
   @Post('')
-  async createProduct(@Body() Product: ProductDto): Promise<ProductDto> {
+  async createProduct(@Body() Product: ProductValidator): Promise<ProductDto> {
     try {
       const response = await this.ProductService.create(Product);
 
@@ -48,9 +49,9 @@ export class ProductController {
   }
 
   @Put("/:id")
-  async updateProduct(@Param('id') id: string, @Body() Product: ProductDto): Promise<ProductDto> {
+  async updateProduct(@Param('id') id: string, @Body() product: ProductValidator): Promise<ProductDto> {
     try {
-      const response = await this.ProductService.updateProduct(id, Product);
+      const response = await this.ProductService.updateProduct(id, product);
 
       return response;
     } catch (error) {

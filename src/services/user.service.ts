@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../database/schemas/user.schema';
-import { UserDto } from '../dtos/user.dto';
+import { UserDto } from '../database/dtos/user.dto';
 
 @Injectable()
 export class UserService {

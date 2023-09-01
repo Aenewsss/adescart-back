@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product, ProductDocument } from '../database/schemas/product.schema';
-import {ProductDto } from '../dtos/product.dto';
+import {ProductDto } from '../database/dtos/product.dto';
 
 @Injectable()
 export class ProductService {
@@ -21,9 +21,9 @@ export class ProductService {
     return await this.ProductModel.find();
   }
 
-  async updateProduct(id: string, Product: ProductDto): Promise<ProductDto> {
-    const oldProduct = await this.ProductModel.findByIdAndUpdate(id, Product);
-    return oldProduct.save();
+  async updateProduct(id: string, product: ProductDto): Promise<ProductDto> {
+    const updated = await this.ProductModel.findByIdAndUpdate(id, product, {new: true});
+    return updated.save();
   }
 
   async deleteProduct(id: string): Promise<ProductDto> {

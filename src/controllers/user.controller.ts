@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, } from '@nestjs/common';
-import { UserDto } from '../dtos/user.dto';
+import { UserDto } from '../database/dtos/user.dto';
 import { UserService } from '../services/user.service';
 import { IsString } from "class-validator";
 import { ChangePasswordValidator } from "src/validators/change-password.validator";
