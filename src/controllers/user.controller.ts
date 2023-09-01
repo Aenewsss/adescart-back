@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, } from '@nestjs/common';
 import { UserDto } from '../dtos/user.dto';
 import { UserService } from '../services/user.service';
+import { IsString } from "class-validator";
+import { ChangePasswordValidator } from "src/validators/change-password.validator";
 
 @Controller('user')
 export class UserController {
@@ -28,16 +30,17 @@ export class UserController {
     }
   }
 
+
   @Post('/change-password')
-  async changePassword(@Body() dto: { email: string, newPassword: string, repeatPassword: string }) {
+  async changePassword(@Body() dto: ChangePasswordValidator) {
     try {
       const user = await this.userService.findUserByEmail(dto.email)
 
       if (!user) throw Error("User not found")
 
-      if(dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")      
-      
-      const result = this.userService.changePassword(user.id, dto.newPassword)      
+      if (dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")
+
+      const result = this.userService.changePassword(user.id, dto.newPassword)
 
       return result
     } catch (e) {
@@ -46,3 +49,4 @@ export class UserController {
   }
 
 }
+
