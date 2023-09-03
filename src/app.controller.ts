@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
 @Controller('')
-export class UserController {
+export class AppController {
     @Get('')
     async hello() {
         return 'A Descart API'
