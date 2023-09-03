@@ -1,16 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserDto } from '../database/dtos/user.dto';
 import { UserService } from '../services/user.service';
-import { IsString } from "class-validator";
 import { ChangePasswordValidator } from "src/validators/change-password.validator";
 import { AuthValidator } from "src/validators/auth.validator";
 import * as bcrypt from "bcrypt"
 import { ChangePasswordLoginValidator } from "src/validators/change-password-login.validator";
+import { JwtService } from "@nestjs/jwt";
+import { AuthGuard } from "src/guards/auth.guard";
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+  ) { }
 
+  @UseGuards(AuthGuard)
   @Get('/find/:id')
   async getUser(@Param('id') id: string): Promise<UserDto> {
     try {
@@ -23,7 +28,7 @@ export class UserController {
   }
 
   @Post('/auth')
-  async authenticate(@Body() dto: AuthValidator): Promise<UserDto> {
+  async authenticate(@Body() dto: AuthValidator): Promise<{ user: UserDto, acessToken: string }> {
     try {
       const user = await this.userService.findUserByEmail(dto.email)
 
@@ -31,13 +36,18 @@ export class UserController {
 
       if (!await bcrypt.compare(dto.password, user.password)) throw Error("Email or password incorrect")
 
-      return user;
+      const payload = { sub: user.id, username: user.email };
+
+      return {
+        user,
+        acessToken: await this.jwtService.signAsync(payload),
+      };
     } catch (error) {
       return error.message;
     }
   }
 
-
+  @UseGuards(AuthGuard)
   @Post('/change-password')
   async changePassword(@Body() dto: ChangePasswordValidator) {
     try {
@@ -76,6 +86,7 @@ export class UserController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async createUser(@Body() dto: { name, email, password }) {
     const hashPass = await this.hashPassword(dto.password)
