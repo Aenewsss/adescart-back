@@ -15,7 +15,7 @@ import { ProductValidator } from "src/validators/product.validator";
 export class ProductController {
   constructor(private readonly ProductService: ProductService) { }
 
-  @Get('/find/:id')
+  @Get('/:id')
   async getProduct(@Param('id') id: string): Promise<ProductDto> {
     try {
       const response = await this.ProductService.findProduct(id);

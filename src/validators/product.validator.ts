@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEnum} from "class-validator"
+import { IsNotEmpty, IsString, IsEnum,IsOptional} from "class-validator"
 import { CategoryEnum } from "src/enum/category.enum";
 
 export class ProductValidator {
@@ -14,7 +14,7 @@ export class ProductValidator {
     @IsEnum(CategoryEnum)
     category: CategoryEnum;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     description: string;
 

@@ -5,6 +5,7 @@ import { IsString } from "class-validator";
 import { ChangePasswordValidator } from "src/validators/change-password.validator";
 import { AuthValidator } from "src/validators/auth.validator";
 import * as bcrypt from "bcrypt"
+import { ChangePasswordLoginValidator } from "src/validators/change-password-login.validator";
 
 @Controller('user')
 export class UserController {
@@ -45,6 +46,25 @@ export class UserController {
       if (!user) throw Error("User not found")
 
       if (dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")
+
+      const hashPass = await this.hashPassword(dto.newPassword)
+
+      const result = this.userService.changePassword(user.id, hashPass)
+
+      return result
+    } catch (e) {
+      return e.message
+    }
+  }
+
+  @Post('/change-password-login')
+  async changePasswordLogin(@Body() dto: ChangePasswordLoginValidator) {
+    try {
+      const user = await this.userService.findUserByEmail(dto.email)
+
+      if (!user) throw Error("User not found")
+
+      if (dto.newPassword !== user.password) throw Error("Old password doesn't match")
 
       const hashPass = await this.hashPassword(dto.newPassword)
 
