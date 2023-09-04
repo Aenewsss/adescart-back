@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { ProductDto } from '../database/dtos/product.dto';
 import { ProductService } from '../services/product.service';
-import { ProductValidator } from "src/validators/product.validator";
-import { AuthGuard } from "src/guards/auth.guard";
+import { ProductValidator } from "../validators/product.validator";
+import { AuthGuard } from "../guards/auth.guard";
 
 @Controller('product')
 export class ProductController {

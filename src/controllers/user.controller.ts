@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { UserDto } from '../database/dtos/user.dto';
 import { UserService } from '../services/user.service';
-import { ChangePasswordValidator } from "src/validators/change-password.validator";
-import { AuthValidator } from "src/validators/auth.validator";
+import { ChangePasswordValidator } from "../validators/change-password.validator";
+import { AuthValidator } from "../validators/auth.validator";
 import * as bcrypt from "bcrypt"
-import { ChangePasswordLoginValidator } from "src/validators/change-password-login.validator";
+import { ChangePasswordLoginValidator } from "../validators/change-password-login.validator";
 import { JwtService } from "@nestjs/jwt";
-import { AuthGuard } from "src/guards/auth.guard";
+import { AuthGuard } from "../guards/auth.guard";
 
 @Controller('user')
 export class UserController {
