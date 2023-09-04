@@ -32,9 +32,9 @@ export class UserController {
     try {
       const user = await this.userService.findUserByEmail(dto.email)
 
-      if (!user) throw Error("User not found")
+      if (!user) throw new Error("User not found")
 
-      if (!await bcrypt.compare(dto.password, user.password)) throw Error("Email or password incorrect")
+      if (!await bcrypt.compare(dto.password, user.password)) throw new Error("Email or password incorrect")
 
       const payload = { sub: user.id, username: user.email };
 
@@ -53,9 +53,9 @@ export class UserController {
     try {
       const user = await this.userService.findUserByEmail(dto.email)
 
-      if (!user) throw Error("User not found")
+      if (!user) throw new Error("User not found")
 
-      if (dto.newPassword !== dto.repeatPassword) throw Error("Password must be equal")
+      if (dto.newPassword !== dto.repeatPassword) throw new Error("Password must be equal")
 
       const hashPass = await this.hashPassword(dto.newPassword)
 
@@ -72,9 +72,9 @@ export class UserController {
     try {
       const user = await this.userService.findUserByEmail(dto.email)
 
-      if (!user) throw Error("User not found")
+      if (!user) throw new Error("User not found")
 
-      if (dto.newPassword !== user.password) throw Error("Old password doesn't match")
+      if (dto.newPassword !== user.password) throw new Error("Old password doesn't match")
 
       const hashPass = await this.hashPassword(dto.newPassword)
 
