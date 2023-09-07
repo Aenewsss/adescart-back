@@ -13,7 +13,7 @@ import { AppController } from "./app.controller";
     JwtModule.register({
       global: true,
       secret: process.env.NEXT_PUBLIC_JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '30d' },
     }),
     ProductModule,
     UserModule,
